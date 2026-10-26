@@ -9,6 +9,30 @@
   ];
   var WEEKDAY_NAMES = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
 
+  var deferredInstallPrompt = null;
+  var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  var isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    var btn = document.getElementById("action-install");
+    if (btn) btn.hidden = false;
+  });
+
+  window.addEventListener("appinstalled", function () {
+    deferredInstallPrompt = null;
+    var btn = document.getElementById("action-install");
+    if (btn) btn.hidden = true;
+    showToast("Aplicativo instalado.");
+  });
+
   var state = {
     entries: loadEntries(),
     view: "lancamentos",
@@ -744,6 +768,24 @@
     document.getElementById("btn-menu").addEventListener("click", openMenu);
     document.querySelectorAll("[data-close-menu]").forEach(function (el) {
       el.addEventListener("click", closeMenu);
+    });
+
+    if (isIos && !isStandalone) {
+      document.getElementById("action-install").hidden = false;
+    }
+    document.getElementById("action-install").addEventListener("click", function () {
+      closeMenu();
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(function () {
+          deferredInstallPrompt = null;
+          document.getElementById("action-install").hidden = true;
+        });
+      } else if (isIos) {
+        showToast("Toque em Compartilhar e depois em \"Adicionar à Tela de Início\".");
+      } else {
+        showToast("Use o menu do navegador para instalar o app.");
+      }
     });
 
     document.getElementById("action-share").addEventListener("click", shareSummary);

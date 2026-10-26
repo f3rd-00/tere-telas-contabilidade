@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Terê Telas · Contabilidade</title>
+<meta name="theme-color" content="#FAFAF8" />
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app" id="app" data-view="lancamentos">
+
+  <!-- Brand -->
+  <header class="brand-bar">
+    <img src="assets/logo.png" alt="Logo Terê Telas" class="brand-logo" />
+    <div class="brand-text">
+      <span class="brand-name">Terê Telas</span>
+      <span class="brand-sub">Contabilidade</span>
+    </div>
+  </header>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <button class="icon-btn" id="btn-menu" aria-label="Abrir menu" aria-haspopup="true">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+
+    <button class="month-switch" id="month-switch" aria-label="Selecionar mês">
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="month-label">outubro 2026</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <button class="icon-btn" id="btn-search" aria-label="Buscar lançamentos">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M19 19l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Dropdown menu -->
+  <div class="menu-sheet" id="menu-sheet" hidden>
+    <div class="menu-backdrop" data-close-menu></div>
+    <div class="menu-panel">
+      <button class="menu-item" id="action-share">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="2.2" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="12" r="2.2" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="19" r="2.2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.8l8-4.2M8 13.2l8 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Compartilhar resumo do mês
+      </button>
+      <div class="menu-divider"></div>
+      <button class="menu-item" id="action-export">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Exportar backup (.json)
+      </button>
+      <button class="menu-item" id="action-import">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3m0 0l-4 4m4-4l4 4M5 21h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Importar backup
+      </button>
+      <input type="file" id="import-input" accept="application/json" hidden />
+      <div class="menu-divider"></div>
+      <button class="menu-item menu-item--danger" id="action-clear">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Apagar todos os lançamentos
+      </button>
+    </div>
+  </div>
+
+  <main class="content" id="content">
+
+    <!-- ============ TAB: LANÇAMENTOS ============ -->
+    <section class="view" id="view-lancamentos">
+
+      <section class="balance-card">
+        <p class="balance-label">Saldo do mês</p>
+        <p class="balance-figure" id="balance-figure">R$ 0,00</p>
+
+        <div class="stat-row">
+          <div class="stat stat--in">
+            <span class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5m0 0l-6 6m6-6l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="stat-text">
+              <span class="stat-label">Entradas</span>
+              <span class="stat-value" id="total-in">R$ 0,00</span>
+            </span>
+          </div>
+          <div class="stat stat--out">
+            <span class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="stat-text">
+              <span class="stat-label">Saídas</span>
+              <span class="stat-value" id="total-out">R$ 0,00</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div class="segmented" role="tablist" aria-label="Filtrar lançamentos">
+        <button class="segmented-btn is-active" data-filter="all" role="tab" aria-selected="true">Tudo</button>
+        <button class="segmented-btn" data-filter="income" role="tab" aria-selected="false">Entradas</button>
+        <button class="segmented-btn" data-filter="expense" role="tab" aria-selected="false">Saídas</button>
+      </div>
+
+      <div class="search-bar" id="search-bar" hidden>
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M19 19l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input type="text" id="search-input" placeholder="Buscar por descrição" />
+        <button class="icon-btn icon-btn--small" id="search-clear" aria-label="Limpar busca">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <section class="ledger" id="ledger" aria-label="Lançamentos"></section>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
+          <rect x="10" y="14" width="44" height="38" rx="3" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 24h44" stroke="currentColor" stroke-width="2"/>
+          <path d="M20 33h10M20 41h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p class="empty-title">Nenhum lançamento aqui</p>
+        <p class="empty-text">Toque em + para registrar uma entrada ou despesa.</p>
+      </div>
+
+    </section>
+
+    <!-- ============ TAB: GRÁFICO ============ -->
+    <section class="view" id="view-grafico" hidden>
+      <div class="panel-heading">
+        <h2>Entradas e saídas por mês</h2>
+        <p class="panel-sub" id="chart-trend">—</p>
+      </div>
+      <div class="chart-wrap">
+        <svg id="chart-svg" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="chart-legend">
+        <span class="legend-item"><i class="legend-dot legend-dot--in"></i>Entradas</span>
+        <span class="legend-item"><i class="legend-dot legend-dot--out"></i>Saídas</span>
+      </div>
+    </section>
+
+    <!-- ============ TAB: CALENDÁRIO ============ -->
+    <section class="view" id="view-calendario" hidden>
+      <div class="panel-heading">
+        <h2>Entradas do mês, dia a dia</h2>
+        <p class="panel-sub">Toque em um dia para ver ou lançar.</p>
+      </div>
+      <div class="calendar-weekdays">
+        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- Bottom tab navigation -->
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <button class="bottom-nav-btn is-active" data-tab="lancamentos">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M9 7h10M9 12h10M9 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M5 7h.01M5 12h.01M5 17h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      Lançamentos
+    </button>
+    <button class="bottom-nav-btn" data-tab="grafico">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 19V10M12 19V5M19 19v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Gráfico
+    </button>
+    <button class="bottom-nav-btn" data-tab="calendario">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5.5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Calendário
+    </button>
+  </nav>
+
+  <!-- Floating action button -->
+  <button class="fab" id="fab" aria-label="Novo lançamento">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+
+  <!-- Add/Edit bottom sheet -->
+  <div class="sheet-overlay" id="sheet-overlay" hidden>
+    <div class="sheet-backdrop" data-close-sheet></div>
+    <form class="sheet" id="entry-form">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h2 id="sheet-title">Novo lançamento</h2>
+        <button type="button" class="icon-btn" id="sheet-close" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <input type="hidden" id="entry-id" />
+
+      <div class="type-toggle" role="radiogroup" aria-label="Tipo de lançamento">
+        <input type="radio" name="type" id="type-income" value="income" checked />
+        <label for="type-income" class="type-option type-option--in">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5m0 0l-6 6m6-6l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Entrada
+        </label>
+        <input type="radio" name="type" id="type-expense" value="expense" />
+        <label for="type-expense" class="type-option type-option--out">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Saída
+        </label>
+      </div>
+
+      <label class="field field--amount">
+        <span class="field-label">Valor</span>
+        <div class="amount-input">
+          <span class="amount-prefix">R$</span>
+          <input type="text" inputmode="decimal" id="entry-amount" placeholder="0,00" required autocomplete="off" />
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Descrição</span>
+        <input type="text" id="entry-desc" placeholder="Ex.: Tela Juliana, Aluguel, Fornecedor" required autocomplete="off" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Data</span>
+        <input type="date" id="entry-date" required />
+      </label>
+
+      <button type="submit" class="btn-primary" id="entry-submit">Salvar lançamento</button>
+      <button type="button" class="btn-delete" id="entry-delete" hidden>Excluir lançamento</button>
+    </form>
+  </div>
+
+  <!-- Day detail sheet (from calendar) -->
+  <div class="sheet-overlay" id="day-overlay" hidden>
+    <div class="sheet-backdrop" data-close-day></div>
+    <div class="sheet sheet--day">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h2 id="day-title">Dia</h2>
+        <button type="button" class="icon-btn" id="day-close" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p class="day-total" id="day-total">R$ 0,00</p>
+      <div class="ledger" id="day-ledger"></div>
+      <button type="button" class="btn-primary" id="day-add">Lançar nesse dia</button>
+    </div>
+  </div>
+
+  <!-- Month picker sheet -->
+  <div class="sheet-overlay" id="month-overlay" hidden>
+    <div class="sheet-backdrop" data-close-month></div>
+    <div class="sheet sheet--month">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h2>Selecionar mês</h2>
+        <button type="button" class="icon-btn" id="month-close" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="month-grid" id="month-grid"></div>
+    </div>
+  </div>
+
+  <!-- Confirm dialog -->
+  <div class="sheet-overlay" id="confirm-overlay" hidden>
+    <div class="sheet-backdrop" data-close-confirm></div>
+    <div class="confirm-card">
+      <p class="confirm-title" id="confirm-title">Apagar tudo?</p>
+      <p class="confirm-text" id="confirm-text">Essa ação não pode ser desfeita.</p>
+      <div class="confirm-actions">
+        <button class="btn-ghost" id="confirm-cancel">Cancelar</button>
+        <button class="btn-danger" id="confirm-ok">Apagar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
